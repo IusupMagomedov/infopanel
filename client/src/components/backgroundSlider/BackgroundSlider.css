@@ -1,0 +1,81 @@
+.countiner-style {
+    height: 100%;
+    position: relative;
+}
+.description {
+    width: 100%;
+    position: absolute;
+    z-index: 99;
+    color: aliceblue;
+    top: 0%;
+    left: 0%;
+    text-shadow: 1px 1px 2px black;
+    text-align: left;
+}
+.description h1 {
+    font-size: 46;
+}
+.description p {
+    font-size: 22px;
+}
+.carousel-boullt {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 550px;
+    z-index: 800;
+}
+.carousel-boullt span {
+    width: 45px;
+    height: 12px;
+    background-color: rgb(108, 108, 108);
+    margin-left: 10px;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 3px 2px 2px rgba(72, 72, 72, 0.33);
+}
+.fso-logo {
+    width: 50px;
+    stroke: aliceblue;
+    fill:none;
+    filter: drop-shadow(1px 1px 4px black);
+    position: absolute;
+    left: 2%;
+    top: 10px;
+}
+.fso-title {
+    position: absolute;
+    left: 7%;
+    top: -15px;
+    font-size: 200%;
+}
+
+.date {
+    position: absolute;
+    left:83%;
+    top: -10px;
+    font-size: 140%;
+}
+
+.time {
+    position: absolute;
+    left: 83%;
+    top: -25px;
+    font-size: 450%;
+}
+.hidden {
+    visibility: hidden;
+}
+.dataTitle {
+    position: absolute;
+    left: 5%;
+    font-size: 60px;
+    top: 60px;
+}
+.dataBody {
+    position: absolute;
+    left: 5%;
+    top: 350px;
+}
+
