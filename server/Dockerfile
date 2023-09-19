@@ -2,7 +2,7 @@ FROM node
 
 RUN npm install -g nodemon
 
-WORKDIR /server
+WORKDIR /node-app
 
 COPY package.json .
 
