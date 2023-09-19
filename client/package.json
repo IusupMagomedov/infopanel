@@ -1,8 +1,7 @@
 {
   "name": "react-infopanel",
-  "homepage": "https://iusupmagomedov.github.io/infopanel/",
   "version": "0.1.0",
-  "proxy": "http://localhost:5000",
+  "proxy": "http://server_c:5000",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.5",
