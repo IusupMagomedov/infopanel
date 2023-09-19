@@ -6,15 +6,14 @@ services:
     ports:
       - '3000:3000'
     volumes:
-      - ./client:/c
-      - /c/node_modules
+      - ./client:/client
+      - /client/node_modules
     stdin_open: true
     tty: true
     depends_on:
       - server
     networks:
       - mern-network
-
   server: 
     build: ./server
     container_name: server_c
@@ -22,12 +21,10 @@ services:
     ports:
       - '5000:5000'
     volumes:
-      - ./server:/s
-      - /s/node_modules
+      - ./server:/server
+      - /server/node_modules
     networks:
       - mern-network
-
-
 networks:
   mern-network:
     driver: bridge

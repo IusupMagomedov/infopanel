@@ -1,6 +1,8 @@
 FROM node
 
-WORKDIR /app
+RUN npm install -g nodemon
+
+WORKDIR /server
 
 COPY package.json .
 
@@ -10,4 +12,4 @@ COPY . .
 
 EXPOSE 5000
 
-CMD [ "npm", "start" ]
+CMD [ "npm", "dev" ]
