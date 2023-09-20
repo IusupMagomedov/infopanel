@@ -6,7 +6,9 @@ const BackgroundSlider = () => {
     const [ currentState, setCurrentState ] = useState(0)
     const [ clockBlinker, setClockBlinker ] = useState(true)
     const [ bgImageStyle, setBgImageStyle ] = useState(undefined)
-    const [ backendData, setBackendData ] = useState({ slides: 
+    const [ backendData, setBackendData ] = useState({ 
+        companyName: "Наименование",
+        slides:
         [   
             {   url: '1.png', 
                 title: 'Пожалуйста подождите.', 
@@ -104,7 +106,7 @@ const BackgroundSlider = () => {
             <div style={bgImageStyle}></div>
             <div className='description'>
                 <FSOLogo className='fso-logo'/>
-                <h1 className='fso-title'>Наименование организации</h1>
+                <h1 className='fso-title'>{backendData.companyName}</h1>
                 <h1 className='date'>{getCurrentDate()}</h1>
                 <h1 className='time' dangerouslySetInnerHTML={{__html: getCurrentTime()}}/>
                 <h1 className='dataTitle'>{backendData.slides[currentState].title}</h1>

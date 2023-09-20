@@ -15,9 +15,14 @@ app.get('/api', (req, res) => {
     const bdPath = path.join(__dirname, 'birthdays.txt')
     const advPath = path.join(__dirname, 'adv.txt')
     const newsPath = path.join(__dirname, 'news.txt')
+    const companyPath = path.join(__dirname, 'conf.txt')
     
     // функция добавления нуля чтобы время отображалось в формате "ЧЧ:ММ"
     const pad = d =>  (d < 10) ? '0' + d.toString() : d.toString()
+
+
+    const companyName = fs.readFileSync(companyPath, 'utf-8')
+    
 
     const bdContentArr = fs.readFileSync(bdPath, 'utf8')
         .split('\n')
@@ -67,7 +72,13 @@ app.get('/api', (req, res) => {
     const newsFd = fs.openSync(newsPath)
     const newsAgeInMs = fs.fstatSync(newsFd).birthtime
     const newsAgeInHours = getAgeInHours(newsAgeInMs)
-    
+    fs.close(newsFd, (err) => {
+        if (err)
+          console.error('Failed to close file', err);
+        else {
+          console.log("\n> File Closed successfully");
+        }
+      });    
 
 
     // console.log('News after file reading: ', news)
@@ -81,6 +92,13 @@ app.get('/api', (req, res) => {
             let photoFd = fs.openSync(`${photoPath}/${fileNeme}`)
             const birthtimeInMs = fs.fstatSync(photoFd).birthtime
             // console.log(birthtimeInMs)
+            fs.close(photoFd, (err) => {
+                if (err)
+                  console.error('Failed to close file', err);
+                else {
+                  console.log("\n> File Closed successfully");
+                }
+              });  
             let hours = getAgeInHours(birthtimeInMs)
             if(minAge > hours) {
                 minAge = hours
@@ -106,7 +124,8 @@ app.get('/api', (req, res) => {
     // Режимы работы:
     if(isAdvert) {            // Объявления
         // console.log("Advert : ", adv)
-        const result = { 
+        const result = {
+            companyName, 
             slides: [{
                 url: "adv.jpg", 
                 title: adv[1],
@@ -117,7 +136,8 @@ app.get('/api', (req, res) => {
         res.json(result)
     } else if(isBirthday) {   // ДР / Праздники
         // console.log("BD / event : ", birthdaysForToday)
-        const result = { 
+        const result = {
+            companyName, 
             slides: birthdaysForToday.map(element => {
                 return {
                     url: `${element.eventType}.jpg`, 
@@ -131,6 +151,7 @@ app.get('/api', (req, res) => {
     } else if(isSlideShow) { // Слайдшоу
         // console.log("Slideshow array in get request : ", slideShow)
         const result = {
+            companyName,
             slides: slideShow.fileNames.map(slide => {
                 return {
                     url: `photos/${slide}`, 
@@ -143,7 +164,9 @@ app.get('/api', (req, res) => {
         res.json(result)
     }  
     else if(isNews) {        // Новости
-        const result = { slides: news.map((article, index) => {
+        const result = { 
+                companyName,
+                slides: news.map((article, index) => {
                     return {
                         url: `newsphoto/${index}.jpg`, 
                         title: article.title,
@@ -155,6 +178,7 @@ app.get('/api', (req, res) => {
         res.json(result)
     } else { // Заставка
         const result = {
+            companyName,
             slides: [
                 {
                     url: `wallpapper.jpg`, 
