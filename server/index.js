@@ -118,7 +118,7 @@ app.get('/api', (req, res) => {
     // console.log("Slide show is: ", slideShow)
     const isSlideShow = slideShow.age < 100
     const isBirthday = birthdaysForToday.length > 0
-    const isAdvert = adv[0] === 'да\r'
+    const isAdvert = adv[0].includes('да')
     const isNews = false && newsAgeInHours < 48
     // console.log("Is the slide show supposed to be: ", isSlideShow)
     // Режимы работы:
