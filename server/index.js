@@ -5,18 +5,45 @@ const fs = require('fs')
 const path = require( 'path')
 
 
-const port = 5000
+const port = 5000;
+const showBdUntill = 13;
+const date = new Date();
 
 app.use(express.static(__dirname + "/public"));
 
 app.get('/api', (req, res) => {
     
     const photoPath = path.join(__dirname, '/public/photos')
+    const newsPhotoPath = path.join(__dirname, '/public/newsphoto')
     const bdPath = path.join(__dirname, 'birthdays.txt')
     const advPath = path.join(__dirname, 'adv.txt')
     const newsPath = path.join(__dirname, 'news.txt')
     const companyPath = path.join(__dirname, 'conf.txt')
     
+    
+    const getPhotoAge = (photoPath, fileNames) => {
+        let minAge = 100 
+        fileNames.map(fileNeme => {
+            let photoFd = fs.openSync(`${photoPath}/${fileNeme}`)
+            const birthtimeInMs = fs.fstatSync(photoFd).birthtime
+            // console.log(birthtimeInMs)
+            fs.close(photoFd, (err) => {
+                if (err)
+                  console.error('Failed to close file', err);
+                else {
+                  console.log("\n> File Closed successfully");
+                }
+              });  
+            let hours = getAgeInHours(birthtimeInMs)
+            if(minAge > hours) {
+                minAge = hours
+            } 
+        })
+        return minAge
+    }
+
+    const newsPhotoFilesNames = fs.readdirSync(newsPhotoPath);
+
     // функция добавления нуля чтобы время отображалось в формате "ЧЧ:ММ"
     const pad = d =>  (d < 10) ? '0' + d.toString() : d.toString()
 
@@ -24,7 +51,7 @@ app.get('/api', (req, res) => {
     const companyName = fs.readFileSync(companyPath, 'utf-8')
     
 
-    const bdContentArr = fs.readFileSync(bdPath, 'utf8')
+    const bdContentArr = fs.readFileSync(bdPath, 'utf-8')
         .split('\n')
         .map(element => { // мапим массив с днями рождениями в котором строка в виде "08.08.1900 Культурбаева Леонида Анатольевича"
             return {// преобразовываем в json чтобы потом запихать в страницу
@@ -69,44 +96,18 @@ app.get('/api', (req, res) => {
         }   
     }
     
-    const newsFd = fs.openSync(newsPath)
-    const newsAgeInMs = fs.fstatSync(newsFd).birthtime
-    const newsAgeInHours = getAgeInHours(newsAgeInMs)
-    fs.close(newsFd, (err) => {
-        if (err)
-          console.error('Failed to close file', err);
-        else {
-          console.log("\n> File Closed successfully");
-        }
-      });    
-
-
-    // console.log('News after file reading: ', news)
+    // const newsFd = fs.openSync(newsPath)
+    // const newsAgeInMs = fs.fstatSync(newsFd).birthtime
+    const newsAgeInHours = getPhotoAge(newsPhotoPath, newsPhotoFilesNames)
+    
+    
 
 
 
 
-    const getPhotoAge = (photoPath, fileNames) => {
-        let minAge = 100 
-        fileNames.map(fileNeme => {
-            let photoFd = fs.openSync(`${photoPath}/${fileNeme}`)
-            const birthtimeInMs = fs.fstatSync(photoFd).birthtime
-            // console.log(birthtimeInMs)
-            fs.close(photoFd, (err) => {
-                if (err)
-                  console.error('Failed to close file', err);
-                else {
-                  console.log("\n> File Closed successfully");
-                }
-              });  
-            let hours = getAgeInHours(birthtimeInMs)
-            if(minAge > hours) {
-                minAge = hours
-            } 
-        })
-        return minAge
-    }
+    
     const photoFileNames = fs.readdirSync(photoPath)
+    
     const minPhotoAge = getPhotoAge(photoPath, photoFileNames)
     // console.log("List of fileNames : ", photoFileNames)
     const slideShow = {
@@ -117,10 +118,13 @@ app.get('/api', (req, res) => {
     
     // console.log("Slide show is: ", slideShow)
     const isSlideShow = slideShow.age < 100
-    const isBirthday = birthdaysForToday.length > 0
-    const isAdvert = adv[0].includes('да')
-    const isNews = false && newsAgeInHours < 48
-    // console.log("Is the slide show supposed to be: ", isSlideShow)
+    const isBirthday = (birthdaysForToday.length > 0) && (showBdUntill >= date.getHours())
+    const isAdvert = adv[0].includes('да') 
+    const isNews = newsAgeInHours < 48
+    console.log('isNews: ', isNews);
+    console.log("Is the slide show supposed to be: ", isSlideShow)
+    console.log("adv array: ", adv)
+    
     // Режимы работы:
     if(isAdvert) {            // Объявления
         // console.log("Advert : ", adv)
