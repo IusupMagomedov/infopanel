@@ -25,7 +25,7 @@ app.get('/api', (req, res) => {
         let minAge = 100 
         fileNames.map(fileNeme => {
             let photoFd = fs.openSync(`${photoPath}/${fileNeme}`)
-            const birthtimeInMs = fs.fstatSync(photoFd).birthtime
+            const birthtimeInMs = fs.fstatSync(photoFd).birthtime < fs.fstatSync(photoFd).mtime ? fs.fstatSync(photoFd).mtime : fs.fstatSync(photoFd).birthtime
             // console.log(birthtimeInMs)
             fs.close(photoFd, (err) => {
                 if (err)
@@ -98,7 +98,8 @@ app.get('/api', (req, res) => {
     
     // const newsFd = fs.openSync(newsPath)
     // const newsAgeInMs = fs.fstatSync(newsFd).birthtime
-    const newsAgeInHours = getPhotoAge(newsPhotoPath, newsPhotoFilesNames)
+    const newsAgeInHours = getPhotoAge(newsPhotoPath, newsPhotoFilesNames);
+    const advAge = getPhotoAge(advPath, ['']);
     
     
 
@@ -116,14 +117,15 @@ app.get('/api', (req, res) => {
     }
     
     
-    // console.log("Slide show is: ", slideShow)
-    const isSlideShow = slideShow.age < 100
-    const isBirthday = (birthdaysForToday.length > 0) && (showBdUntill >= date.getHours())
-    const isAdvert = adv[0].includes('да') 
-    const isNews = newsAgeInHours < 48
+    // console.log("Slide show is: ", slideShow);
+    // console.log('Age of news: ', newsAgeInHours);
+    const isSlideShow = slideShow.age < 100;
+    const isBirthday = (birthdaysForToday.length > 0) && (showBdUntill >= date.getHours());
+    const isAdvert = adv[0].includes('да') && advAge < 10;
+    const isNews = newsAgeInHours < 48;
     console.log('isNews: ', isNews);
-    console.log("Is the slide show supposed to be: ", isSlideShow)
-    console.log("adv array: ", adv)
+    console.log("Is the slide show supposed to be: ", isSlideShow);
+    console.log("adv array: ", adv);
     
     // Режимы работы:
     if(isAdvert) {            // Объявления
